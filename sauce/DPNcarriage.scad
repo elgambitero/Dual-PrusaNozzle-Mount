@@ -23,20 +23,20 @@ vent_radius=38.40;
 fan_bolt_spacing=32+clearance;
 */
 
-/*
+
 //Detalles del ventilador 30mm
 fan_depth=6.5;
 fan_side=30+clearance;
 vent_radius=28.40;
 fan_bolt_spacing=24+clearance;
-*/
 
+/*
 //Detalles del ventilador 35mm
 fan_depth=6.5;
 fan_side=35+clearance;
 vent_radius=28.40+5;
 fan_bolt_spacing=29+clearance;
-
+*/
 
 
 
@@ -72,8 +72,16 @@ car_lenght=2*sep_nozzles+2*fan_depth+20;
 chamber_width=40;
 
 
+//belt holder characteristics.
 
-
+holder_height=20;
+holder_wall=3;
+holder_bolt_sep=8;
+holder_plat=12;
+holder_rosca=3;
+holder_margin=3;
+holder_qual=20;
+holder_grade=2;
 
 
 /////////////////////////////////////
@@ -88,6 +96,13 @@ difference(){
 
 		//that center block in the body
 		roundedprismabox(2*sep_nozzles,car_width,car_height,(rosca/2)+sur);
+
+		//The belt holder
+		translate([0,(car_width/2)-2,car_height-holder_height]){
+			rotate([0,0,90]){
+				belt_holder(holder_height,holder_wall,holder_plat,nut_gap,holder_wall,holder_rosca,holder_bolt_sep,holder_margin,holder_grade,holder_qual);
+			}
+		}
 	}
 
 	//center block drills

@@ -131,6 +131,64 @@ module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght){
 	}
 }
 
+
+module buttress_piece(a,b,c,d,e){
+	polyhedron(points=[[a/2,b/2,0],[a/2,-b/2,0],[-a/2,-b/2,0],[-a/2,b/2,0],[(c)-(a/2),d/2,e],[(c)-(a/2),-d/2,e],[-a/2,-d/2,e],[-a/2,d/2,e]],
+			triangles=[[1,4,5],[0,4,1],[0,7,4],[0,3,7],[3,6,7],[3,2,6],[5,6,2],[2,1,5],[5,4,7],[5,7,6],[0,1,2],[0,2,3]]
+	);
+}
+
+
+
+
+module grade_buttress(base1,base2,width,height,grade,iterations){
+	union(){
+		for(i=[0:iterations-1]){
+			translate([(base1-(base1-base2)*pow((i/iterations),grade))/2,0,i*height/iterations]){
+				buttress_piece(base1-(base1-base2)*pow((i/iterations),grade),width,base1-(base1-base2)*pow(((i+1)/iterations),grade),width,height/iterations);
+			}
+		}
+	}
+}
+
+
+
+module belt_holder(height,width,depth,gap,base,rosca,bolt_sep,margin,grade,quality){
+	difference(){
+		union(){
+			for(i=[-1:1]){
+				translate([0,i*(gap+width),height]){
+					rotate([180,0,0]){
+						grade_buttress(2,depth+2+margin,width,height-(base),grade,quality);
+					}
+				}
+			}
+			translate([(margin+depth+2)/2,0,base/2]){
+				cube([margin+depth+2,(2*gap)+(3*width),base],center=true);
+			}
+		}
+		for(i=[-1,1]){
+			for(j=[-1,1]){
+				translate([((margin)+2+(depth/2))+i*(bolt_sep/2),j*((width+gap)/2),base/2]){
+					cube([rosca,gap,base+2],center=true);
+				}
+			}
+		}
+	}
+}
+
+
+//belt_holder(15,4,10,3,4,4,8,3,2,10);
+
+
+
+
+
+///////////////////////////////////
+//NOZZLE DUMMIES
+///////////////////////////////////
+
+
 module cartridge(){
 	//difference(){
 		translate([-(6+(4.5/2)),-6/2,0]){
@@ -161,6 +219,20 @@ module prusanozzle(angle,height){
 }
 
 
+
+
+
+
+
+
+
+/////////////////////////////
+//TESTS
+/////////////////////////////
+
+
+
+
 //prusanozzle(90,2);
 
 
@@ -169,6 +241,9 @@ module prusanozzle(angle,height){
 //cartridge();
 
 
+//grade_buttress(3,10,20,20,2,20);
+
+//buttress_piece(40,20,40,20,20);
 
 //vent(11.5,40,32,120,4,20);
 

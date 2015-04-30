@@ -262,7 +262,7 @@ module carriage(){
 //THE BOWDEN FEEDER
 ///////////////////////////////////
 
-module feeder(){
+module feeder(clear){
 	difference(){
 		union(){
 			difference(){
@@ -294,11 +294,11 @@ module feeder(){
 		}
 		for(i=[-1,1]){
 			translate([i*(bolt_separation/2),0,-1]){
-				cylinder(r1=rosca/2,r2=rosca/2,h=2+feeder_height,$fn=round_quality);
+				cylinder(r1=(rosca+clear)/2,r2=(rosca+clear)/2,h=2+feeder_height,$fn=round_quality);
 			}
 		}
 		translate([0,0,feeder_height]){
-			cylinder(r1=9.7/2,r2=9.7/2,h=bowden_depth+2);
+			cylinder(r1=(9.7+clear)/2,r2=(9.7+clear)/2,h=bowden_depth+2);
 		}
 		cylinder(r1=3.2/2,r2=3.2/2,h=100,center=true,$fn=round_quality);
 	}

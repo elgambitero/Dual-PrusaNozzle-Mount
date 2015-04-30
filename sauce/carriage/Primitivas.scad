@@ -250,7 +250,47 @@ module retainer(rosca,bolt_sep,width,height,extra){
 	}
 }
 
-
+module canalizer(c_length,c_width,c_height,fun_length,fun_width,fun_height,walls,bolt_sep,rosca){
+	difference(){
+		union(){
+			cube([c_length,c_width,c_height],center=true);
+		}
+		for(i=[-1,1]){
+			translate([0,i*(c_width+1)/2,0.5]){
+				rotate([0,90,0]){
+					rotate([i*90,0,0]){
+						buttress_piece(c_height+1,c_length-2*walls,fun_height+1,fun_length-2*walls,1+(c_width-fun_width-(2*walls))/2);
+					}
+				}
+			}
+		}
+		cube([fun_length,fun_width,200],center=true);
+		for(i=[-1,1]){
+			translate([i*(c_length+0.5)/2,0,0]){
+				rotate([0,0,i*90]){
+					rotate([0,90,90]){
+						buttress_piece(c_height-2*walls,c_width-2*walls,fun_height-2*walls,fun_width,1+(c_length-fun_length)/2);
+					}
+				}
+			}
+		}
+		translate([0,0,-c_height/2]){
+			rotate([0,0,0]){
+				rotate([0,0,0]){
+					trapecio(c_length-2*walls,c_width,fun_length-2*walls,30+fun_width,c_height-fun_height);
+				}
+			}
+		}
+		for(i=[-1,1]){
+			translate([0,i*bolt_sep/2,((c_height-(c_width-bolt_sep))/2)]){
+				rotate([0,90,0]){
+					cylinder(r1=rosca/2,r2=rosca/2,h=c_length+50,center=true,$fn=20);
+				}
+			}
+		}
+	}
+	
+}
 
 
 ///////////////////////////////////
@@ -304,7 +344,7 @@ module prusanozzle(angle,height){
 
 //prusanozzle(90,2);
 
-
+//canalizer(60,40,35,30,18,27,2,36,3);
 
 
 //cartridge();

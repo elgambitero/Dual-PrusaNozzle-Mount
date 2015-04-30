@@ -1,16 +1,16 @@
 include <Primitivas.scad>
 
-clearance=0.1;
+clearance=0.4;
+switchable_fan=1; //Tells if the fan is removable without screws.
 
-
-//Detalles de las tuercas (probablemente M4). NO TOCAR
+//Detalles de las tuercas (probablemente M3). NO TOCAR
 nut_gap=6+clearance;
 nut_height=3+clearance;
 
 //Detalles de la placa
-nozzleplatew=21.4;
-nozzleplatel=64;
-bolt_separation=50;
+nozzleplatew=20;
+nozzleplatel=62.5;
+bolt_separation=47.50+3;
 
 
 //VENTILADORES (COMENTAR LOS QUE NO SEAN)
@@ -48,6 +48,7 @@ buttress_lenght=20;
 feeder_grade=2;
 feeder_qual=30;
 
+
 //LM8UU details
 
 LM8UU_Diam=15;
@@ -65,17 +66,19 @@ thermal_hole_w=6/2;
 //Carriage Characteristics
 
 car_width=70;
-car_height=40;
+car_height=38;
 top_width=50;
 sep_nozzles=21.4;
-rosca=4;
+rosca=3;
 sur=3;
 nozzle_bolt_depth=30;
-nut_depth=15;
+nut_depth=12;
 nut_reach=18;
 walls=2;
 //car_lenght=120;
 car_lenght=2*sep_nozzles+2*fan_depth+20;
+
+base_reinforcement=2;
 
 if(switchable_fan!=0){
 	assign(car_lenght=2*sep_nozzles+2*fan_depth+20);
@@ -92,12 +95,29 @@ chamber_width=40;
 
 holder_height=35;
 holder_wall=3;
+holder_center_wall=8;
 holder_bolt_sep=10;
 holder_plat=17;
 holder_rosca=3;
 holder_margin=0;
 holder_qual=20;
 holder_grade=3;
+
+ret_width=1.2;
+ret_height=4;
+
+scars=0.5;
+scars_depth=1;
+
+//Cable holder characteristics
+
+ch_width=2;
+ch_length=10+2*ch_width;
+ch_height=4;
+ch_gap=5;
+ch_entrance=4;
+ch_radius=1.3;
+ch_extra=4;
 
 
 /////////////////////////////////////
@@ -109,12 +129,14 @@ module carriage(){
 		union(){
 	
 			//the body
-			if(switchable_fan==0){
-				trapecio(car_lenght,car_width,car_lenght,top_width,car_height);
-			}
-			else{
-				translate([-1.5,0,0]){
-					trapecio(car_lenght+3,car_width,car_lenght,top_width,car_height);
+			translate([0,0,-base_reinforcement]){
+				if(switchable_fan==0){
+					trapecio(car_lenght,car_width,car_lenght,top_width,car_height+base_reinforcement);
+				}
+				else{
+					translate([2,0,0]){
+						trapecio(car_lenght+4,car_width,car_lenght+4,top_width,car_height+base_reinforcement);
+					}
 				}
 			}
 			//that center block in the body
@@ -123,8 +145,38 @@ module carriage(){
 			//The belt holder
 			translate([0,(car_width/2)-2,car_height-holder_height]){
 				rotate([0,0,90]){
-					belt_holder(holder_height,holder_wall,holder_plat,nut_gap,holder_wall,holder_rosca,holder_bolt_sep,holder_margin,holder_grade,holder_qual);
+					belt_holder(holder_height,holder_wall,holder_center_wall,holder_plat,nut_gap,holder_wall,holder_rosca,holder_bolt_sep,holder_margin,holder_grade,holder_qual);
 				}
+			}
+
+			//the cable holder
+			if(switchable_fan==0){
+				for(i=[-1,1]){		
+					translate([i*(((car_lenght/2))-(ch_length/2)),-(i*(top_width+ch_gap)/2),(car_height-ch_height)]){
+						rotate([0,0,90+i*90]){
+							scale([1,-1,1]){
+								cableholder(ch_length,ch_height,ch_gap,ch_width,ch_entrance,ch_radius);
+							}
+						}	
+					}
+				}
+			}
+			else{
+					
+				translate([((car_lenght/2))+4-(ch_length/2)-ch_width,-(top_width+ch_gap)/2,car_height-ch_height]){
+					rotate([0,0,0]){
+						scale([-1,1,1]){
+							cableholder(ch_length,ch_height,ch_gap,ch_width,ch_entrance,ch_radius);
+						}
+					}
+				}
+				translate([-((car_lenght/2))+(ch_length/2)+ch_width,(top_width+ch_gap)/2,car_height-ch_height]){
+					rotate([0,0,180]){
+						scale([-1,1,1]){
+							cableholder(ch_length,ch_height,ch_gap,ch_width,ch_entrance,ch_radius);
+						}
+					}
+				}	
 			}
 		}
 	
@@ -194,11 +246,16 @@ module carriage(){
 				}
 			}
 		}
-	
-		//rail clearance
-		rails(0.5);	
-	}
+		
+		//belt scars
+		translate([0,(car_width+holder_plat)/2,car_height-holder_height]){
+			belt_scars(holder_wall,nut_gap,holder_center_wall,scars,scars_depth,holder_bolt_sep-holder_rosca);
+		}
 
+		//rail clearance
+		rails(1.5);	
+	}
+	
 }
 
 ///////////////////////////////////
@@ -221,7 +278,7 @@ module feeder(){
 			}
 			for(i=[-1,1]){
 				translate([i*(bolt_separation/2),0,0]){
-					cylinder(r1=-clearance+nozzleplatew/3,r2=-clearance+nozzleplatew/3,h=feeder_height,$fn=round_quality);
+					cylinder(r1=(nozzleplatel-bolt_separation)/2,r2=(nozzleplatel-bolt_separation)/2,h=feeder_height,$fn=round_quality);
 				}
 			}
 			for(i=[-1,1]){

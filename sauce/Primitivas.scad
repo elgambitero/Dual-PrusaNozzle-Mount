@@ -91,10 +91,10 @@ module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,swit
 			}
 		}
 		else{
-			translate([((total_lenght/2)-(fan_depth/2)),0,0]){
-					cube([fan_depth+1,fan_side,fan_side],center=true);
+			translate([-((total_lenght/2)-(fan_depth/2)),0,0]){
+					cube([fan_depth+0.5,fan_side,fan_side],center=true);
 			}
-			translate([-((total_lenght/2)-(fan_depth/2)),0,10]){
+			translate([((total_lenght/2)-(fan_depth/2)),0,10]){
 					cube([fan_depth+1,fan_side,fan_side+20],center=true);
 			}
 		}
@@ -104,7 +104,7 @@ module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,swit
 					for(i=[0,1,2,3]){
 						rotate([0,0,90*i]){
 							translate([bolt_spacing/2,bolt_spacing/2,0]){
-								cylinder(r1=rosca/2,r2=rosca/2,h=rosca_lenght,$fn=round_quality,center=true);
+								cylinder(r1=rosca/2,r2=rosca/2,h=rosca_lenght+50,$fn=round_quality,center=true);
 							}
 						}
 					}
@@ -141,23 +141,28 @@ module grade_buttress(base1,base2,width,height,grade,iterations){
 
 
 
-module belt_holder(height,width,depth,gap,base,rosca,bolt_sep,margin,grade,quality){
+module belt_holder(height,width,center_width,depth,gap,base,rosca,bolt_sep,margin,grade,quality){
 	difference(){
 		union(){
-			for(i=[-1:1]){
-				translate([0,i*(gap+width),height]){
+			for(i=[-1,1]){
+				translate([0,i*(gap+((width+center_width)/2)),height]){
 					rotate([180,0,0]){
 						grade_buttress(2,depth+2+margin,width,height-(base),grade,quality);
 					}
 				}
 			}
+			translate([0,0,height]){
+				rotate([180,0,0]){
+					grade_buttress(2,depth+2+margin,center_width,height-(base),grade,quality);
+				}
+			}
 			translate([(margin+depth+2)/2,0,base/2]){
-				cube([margin+depth+2,(2*gap)+(3*width),base],center=true);
+				cube([margin+depth+2,(2*gap)+(2*width)+center_width,base],center=true);
 			}
 		}
 		for(i=[-1,1]){
 			for(j=[-1,1]){
-				translate([((margin)+2+(depth/2))+i*(bolt_sep/2),j*((width+gap)/2),base/2]){
+				translate([((margin)+2+(depth/2))+i*(bolt_sep/2),j*((center_width+gap)/2),base/2]){
 					cube([rosca,gap,base+2],center=true);
 				}
 			}
@@ -166,8 +171,41 @@ module belt_holder(height,width,depth,gap,base,rosca,bolt_sep,margin,grade,quali
 }
 
 
-//belt_holder(15,4,10,3,4,4,8,3,2,10);
+module cableholder(lenght,height,gap,width,entrance,radius){
+	difference(){
+		translate([0,0,0]){
+			roundedprismabox(lenght,gap+2*width,height,radius);
+		}
+		translate([0,0,-1]){
+			roundedprismabox(lenght-2*width,gap,height+2,radius);
+		}
+	
+		translate([lenght/2,-(entrance/2)+(gap/2),height/2]){
+			cube([width+5,entrance,height],center=true);
+		}
+	}
+}
 
+module belt_scars(holder_wall,holder_gap,holder_center_wall,scars,depth,width){
+	rotate([0,0,90]){
+		for(i=[-floor((((2*holder_wall)+holder_center_wall+2*holder_gap)/scars)/2):floor((((2*holder_wall)+holder_center_wall+2*holder_gap)/scars)/2)]){
+			translate([0,2*i*scars,0]){
+				cube([width,scars,depth],center=true);
+			}
+		}
+	}
+}
+
+module retainer(rosca,bolt_sep,width,height,extra){
+	difference(){
+		roundedprismabox(bolt_sep+2*width+rosca,rosca+2*width+extra,height,1);
+		for(i=[-1,1]){
+			translate([i*bolt_sep/2,0,height/2]){
+				cylinder(r1=rosca/2,r2=rosca/2,height+2,center=true,$fn=round_quality);
+			}
+		}
+	}
+}
 
 
 
@@ -196,10 +234,10 @@ module prusanozzle(angle,height){
 			cube([21.4,64,4],center=true);
 		}
 		translate([0,0,-((52.86/2)-4)]){
-			cylinder(r1=4.5/2,r2=4.5/2,h=52.86,center=true);
+			cylinder(r1=4.5/2,r2=4.5/2,h=50.5,center=true);
 		}
 		rotate([0,0,angle]){
-			translate([0,0,-52.86+height+4]){
+			translate([0,0,-50.5+height+4]){
 				cartridge();
 			}
 		}

@@ -1,3 +1,6 @@
+include <Characteristics.scad>
+
+
 round_quality=30;
 
 
@@ -16,7 +19,7 @@ module centerblock_drills(dw,dd,depth,d,nut_depth,nut_gap,nut_reach,nut_height){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
 		translate([dd/2,(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,nut_reach,nut_height],center=true);
+			cube([nut_gap,2*nut_reach,nut_height],center=true);
 		}
 	}
 	union(){
@@ -24,7 +27,7 @@ module centerblock_drills(dw,dd,depth,d,nut_depth,nut_gap,nut_reach,nut_height){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
 		translate([dd/2,-(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,nut_reach,nut_height],center=true);
+			cube([nut_gap,2*nut_reach,nut_height],center=true);
 		}
 	}
 	union(){
@@ -32,7 +35,7 @@ module centerblock_drills(dw,dd,depth,d,nut_depth,nut_gap,nut_reach,nut_height){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
 		translate([-dd/2,-(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,nut_reach,nut_height],center=true);
+			cube([nut_gap,2*nut_reach,nut_height],center=true);
 		}
 	}
 	union(){
@@ -40,7 +43,7 @@ module centerblock_drills(dw,dd,depth,d,nut_depth,nut_gap,nut_reach,nut_height){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
 		translate([-dd/2,(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,nut_reach,nut_height],center=true);
+			cube([nut_gap,2*nut_reach,nut_height],center=true);
 		}
 	}
 	
@@ -161,6 +164,57 @@ module vent2(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,swi
 	}
 }
 
+//vent3(fan_depth,fan_side,fan_bolt_spacing,car_lenght,rosca,20,switchable_fan);
+
+module vent3(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,switchable_fan){
+	union(){
+		for(i=[-1,1]){
+			translate([i*((total_lenght/2)-(fan_depth/2)),0,0]){
+				cube([fan_depth+1,fan_side,fan_side],center=true);
+			}
+		}
+		for(i=[-1,1]){
+			translate([i*((car_lenght/2)-fan_depth-2),0,-fan_side/2+fan_side/4]){
+				cube([4,fan_side,fan_side/2],center=true);
+			}
+		}
+		for(i=[-1,1]){
+			translate([i*((total_lenght/2)-(fan_depth/2)-(rosca_lenght/2)),0,0]){
+				rotate([0,90,0]){
+					for(i=[1,2]){
+						rotate([0,0,90*i]){
+							translate([bolt_spacing/2,bolt_spacing/2,0]){
+								cylinder(r1=rosca/2,r2=rosca/2,h=rosca_lenght+50,$fn=round_quality,center=true);
+							}
+						}
+					}
+				}
+			}
+		}
+		for(i=[-1,1]){
+			translate([i*((car_lenght/2)-fan_depth-4+0.05),0,fan_side*0.05]){
+				rotate([0,90,90+90*i]){
+					buttress_piece(fan_side*0.9,fan_side*1,heatsink_h+5,(heatsink_r+1)*2,(car_lenght/2)-sep_nozzles/2-8-fan_depth-4+0.1);
+				}
+			}
+		}
+		for(i=[-1,1]){
+			translate([i*((car_lenght/2)-fan_depth-2),0,0]){
+				rotate([360/16,0,0]){
+					rotate([0,90,0]){
+						cylinder(r1=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),r2=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),h=4,$fn=8,center=true);
+					}
+				}
+			}
+		}
+		translate([0,0,0]){
+			cube([car_lenght-2*(fan_depth+4+((car_lenght/2)-sep_nozzles/2-8-fan_depth-4)),(1+heatsink_r)*2,100],center=true);
+		}
+		translate([0,0,-fan_side/2+lowergap/2]){
+			cube([car_lenght,fan_side,lowergap],center=true);
+		}
+	}
+}
 
 
 module buttress_piece(a,b,c,d,e){
@@ -210,6 +264,7 @@ module belt_holder(height,width,center_width,depth,gap,base,rosca,bolt_sep,margi
 				}
 			}
 		}
+		cube([3*depth,0.5*center_width,100],center=true);
 	}
 }
 
@@ -338,6 +393,7 @@ module prusanozzle(angle,height){
 
 
 
+
 /////////////////////////////
 //TESTS
 /////////////////////////////
@@ -362,3 +418,4 @@ module prusanozzle(angle,height){
 //centerblock_drills(30,40,30,4,20,6,18,3);
 //roundedprismabox(30,40,50,4);
 //cube([30,40,20],center=true);
+//vent3(fan_depth,fan_side,fan_bolt_spacing,car_lenght,rosca,20,switchable_fan);

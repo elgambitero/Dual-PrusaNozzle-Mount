@@ -18,32 +18,32 @@ module centerblock_drills(dw,dd,depth,d,nut_depth,nut_gap,nut_reach,nut_height){
 		translate([dd/2,dw/2,-depth/2]){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
-		translate([dd/2,(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,2*nut_reach,nut_height],center=true);
+		translate([dd/2,(dw/2+(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
+			cube([nut_gap,nut_reach,nut_height],center=true);
 		}
 	}
 	union(){
 		translate([dd/2,-dw/2,-depth/2]){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
-		translate([dd/2,-(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,2*nut_reach,nut_height],center=true);
+		translate([dd/2,-(dw/2+(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
+			cube([nut_gap,nut_reach,nut_height],center=true);
 		}
 	}
 	union(){
 		translate([-dd/2,-dw/2,-depth/2]){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
-		translate([-dd/2,-(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,2*nut_reach,nut_height],center=true);
+		translate([-dd/2,-(dw/2+(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
+			cube([nut_gap,nut_reach,nut_height],center=true);
 		}
 	}
 	union(){
 		translate([-dd/2,dw/2,-depth/2]){
 			cylinder(r1=d/2,r2=d/2,h=depth+1,center=true,$fn=round_quality);
 		}
-		translate([-dd/2,(dw/2-(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
-			cube([nut_gap,2*nut_reach,nut_height],center=true);
+		translate([-dd/2,(dw/2+(nut_reach/2-(nut_gap/2))),-(nut_depth)]){
+			cube([nut_gap,nut_reach,nut_height],center=true);
 		}
 	}
 	

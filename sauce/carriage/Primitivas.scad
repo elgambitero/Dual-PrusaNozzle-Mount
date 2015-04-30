@@ -324,6 +324,9 @@ module prusanozzle(angle,height){
 				cartridge();
 			}
 		}
+		translate([0,0,-27.6+(16.35/2)]){
+			cylinder(r1=8,r2=8,h=16.35,$fn=round_qual,center=true);
+		}
 	}
 }
 

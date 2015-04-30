@@ -1,7 +1,7 @@
 include <Primitivas.scad>
 
 clearance=0.4;
-switchable_fan=1; //Tells if the fan is removable without screws.
+switchable_fan=0; //Tells if the fan is removable without screws.
 
 //Detalles de las tuercas (probablemente M3). NO TOCAR
 nut_gap=6+clearance;
@@ -66,7 +66,7 @@ thermal_hole_w=6/2;
 //Carriage Characteristics
 
 car_width=70;
-car_height=38;
+car_height=35;
 top_width=50;
 sep_nozzles=21.4;
 rosca=3;
@@ -74,9 +74,9 @@ sur=3;
 nozzle_bolt_depth=30;
 nut_depth=12;
 nut_reach=18;
-walls=2;
+walls=3;
 //car_lenght=120;
-car_lenght=2*sep_nozzles+2*fan_depth+20;
+car_lenght=2*sep_nozzles+2*fan_depth+40;
 
 base_reinforcement=2;
 
@@ -106,7 +106,7 @@ holder_grade=3;
 ret_width=1.2;
 ret_height=4;
 
-scars=0.5;
+scars=1;
 scars_depth=1;
 
 //Cable holder characteristics
@@ -152,8 +152,8 @@ module carriage(){
 			//the cable holder
 			if(switchable_fan==0){
 				for(i=[-1,1]){		
-					translate([i*(((car_lenght/2))-(ch_length/2)),-(i*(top_width+ch_gap)/2),(car_height-ch_height)]){
-						rotate([0,0,90+i*90]){
+					translate([i*((((car_lenght/2))-(ch_length/2))+2*ch_width+ch_gap),0,(car_height-ch_height)]){
+						rotate([0,0,180+i*90]){
 							scale([1,-1,1]){
 								cableholder(ch_length,ch_height,ch_gap,ch_width,ch_entrance,ch_radius);
 							}
@@ -170,7 +170,7 @@ module carriage(){
 						}
 					}
 				}
-				translate([-((car_lenght/2))+(ch_length/2)+ch_width,(top_width+ch_gap)/2,car_height-ch_height]){
+				translate([(-((car_lenght/2))+(ch_length/2)+ch_width),(top_width+ch_gap)/2,car_height-ch_height]){
 					rotate([0,0,180]){
 						scale([-1,1,1]){
 							cableholder(ch_length,ch_height,ch_gap,ch_width,ch_entrance,ch_radius);
@@ -191,7 +191,7 @@ module carriage(){
 		}
 	
 		//the actual chamber
-		translate([0,0,(car_height/2)-6]){
+		translate([0,0,(fan_side-15)/2]){
 			rotate([0,90,0]){
 				translate([0,0,-(car_lenght-(2*fan_depth)-(2*walls))/2]){
 					roundedprismabox(fan_side+12,chamber_width,car_lenght-(2*fan_depth)-(2*walls),4);
@@ -201,8 +201,8 @@ module carriage(){
 	
 		//the fan housing and vent
 		
-		translate([0,0,car_height/2]){
-			vent(fan_depth,fan_side,fan_bolt_spacing,car_lenght,rosca,20,switchable_fan);
+		translate([0,0,(car_height-6)/2]){
+			vent2(fan_depth,fan_side,fan_bolt_spacing,car_lenght,rosca,20,switchable_fan);
 		}
 		
 		//The LM8UU's housings

@@ -24,15 +24,22 @@ module assembled(){
 			}
 		}
 	}
+	for(i=[-1,1]){
+		translate([i*(car_lenght-fan_depth)/2,0,car_height-(fan_side/2)-3]){
+			cube([fan_depth,fan_side,fan_side],center=true);
+		}
+	}
 }
 
 
 
-assembled();
+//assembled();
+
+//vent2(fan_depth,fan_side,fan_bolt_spacing,car_lenght,rosca,20,switchable_fan);
 
 
 //carriage();
 
-//retainer(rosca,holder_bolt_sep,ret_width,ret_height);
+retainer(rosca,holder_bolt_sep,ret_width,ret_height,ch_extra);
 
 //feeder();

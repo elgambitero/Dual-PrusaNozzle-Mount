@@ -120,6 +120,49 @@ module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,swit
 }
 
 
+module vent2(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,switchable_fan){
+	union(){
+		if(switchable_fan==0){
+			for(i=[-1,1]){
+				translate([i*((total_lenght/2)-(fan_depth/2)),0,0]){
+					cube([fan_depth+1,fan_side,fan_side],center=true);
+				}
+			}
+		}
+		else{
+			translate([-((total_lenght/2)-(fan_depth/2)),0,0]){
+					cube([fan_depth+0.5,fan_side,fan_side],center=true);
+			}
+			translate([((total_lenght/2)-(fan_depth/2)),0,10]){
+					cube([fan_depth+1,fan_side,fan_side+20],center=true);
+			}
+		}
+		for(i=[-1,1]){
+			translate([i*((total_lenght/2)-(fan_depth/2)-(rosca_lenght/2)),0,0]){
+				rotate([0,90,0]){
+					for(i=[0,1,2,3]){
+						rotate([0,0,90*i]){
+							translate([bolt_spacing/2,bolt_spacing/2,0]){
+								cylinder(r1=rosca/2,r2=rosca/2,h=rosca_lenght+50,$fn=round_quality,center=true);
+							}
+						}
+					}
+				}
+			}
+		}
+		rotate([360/16,0,0]){
+			rotate([0,90,0]){
+				cylinder(r1=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),r2=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),h=total_lenght+20,$fn=8,center=true);
+			}
+		}
+		translate([0,0,-fan_side/4]){
+			cube([car_lenght,fan_side,fan_side/2],center=true);
+		}
+	}
+}
+
+
+
 module buttress_piece(a,b,c,d,e){
 	polyhedron(points=[[a/2,b/2,0],[a/2,-b/2,0],[-a/2,-b/2,0],[-a/2,b/2,0],[(c)-(a/2),d/2,e],[(c)-(a/2),-d/2,e],[-a/2,-d/2,e],[-a/2,d/2,e]],
 			triangles=[[1,4,5],[0,4,1],[0,7,4],[0,3,7],[3,6,7],[3,2,6],[5,6,2],[2,1,5],[5,4,7],[5,7,6],[0,1,2],[0,2,3]]

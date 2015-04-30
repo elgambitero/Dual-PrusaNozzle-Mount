@@ -22,7 +22,7 @@ The reasons I'm releasing this now are:
   - I learned to deal with git so far, so I want to release everything I have ever developed, and kept locked, 
     even if it works or not, just to keep a public memento of my way into the maker world.
   - There could be people out there, who spent the money the prusanozzle costs, to have a nozzle that 
-    didn't work. Maybe someone could take ideas.
+    didn't work. Maybe someone could take ideas, or even use it.
 
 ## What do I do now with this?
 Whatever you want. 

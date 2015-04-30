@@ -7,29 +7,7 @@ module trapecio(a,b,c,d,e){
 	);
 }
 
-//too complicated... about to be removed
-module centerblock(dd,dw,h,d,sur){
-	union(){
-		translate([dd/2,dw/2,h/2]){
-			cylinder(r1=((d/2)+sur),r2=((d/2)+sur),h=h,center=true,$fn=round_quality);
-		}
-		translate([dd/2,-dw/2,h/2]){
-			cylinder(r1=((d/2)+sur),r2=((d/2)+sur),h=h,center=true,$fn=round_quality);
-		}
-		translate([-dd/2,-dw/2,h/2]){
-			cylinder(r1=((d/2)+sur),r2=((d/2)+sur),h=h,center=true,$fn=round_quality);
-		}
-		translate([-dd/2,dw/2,h/2]){
-			cylinder(r1=((d/2)+sur),r2=((d/2)+sur),h=h,center=true,$fn=round_quality);
-		}
-		translate([0,0,h/2]){
-			cube([dd+d+2*sur,dw,h],center=true);
-		}
-		translate([0,0,h/2]){
-			cube([dd,dw+d+2*sur,h],center=true);
-		}
-	}		
-}
+
 
 
 module centerblock_drills(dw,dd,depth,d,nut_depth,nut_gap,nut_reach,nut_height){
@@ -103,11 +81,21 @@ module rails(clearance){
 	}
 }
 
-module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght){
+module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght,switchable_fan){
 	union(){
-		for(i=[-1,1]){
-			translate([i*((total_lenght/2)-(fan_depth/2)),0,0]){
-				cube([fan_depth+1,fan_side,fan_side],center=true);
+		if(switchable_fan==0){
+			for(i=[-1,1]){
+				translate([i*((total_lenght/2)-(fan_depth/2)),0,0]){
+					cube([fan_depth+1,fan_side,fan_side],center=true);
+				}
+			}
+		}
+		else{
+			translate([((total_lenght/2)-(fan_depth/2)),0,0]){
+					cube([fan_depth+1,fan_side,fan_side],center=true);
+			}
+			translate([-((total_lenght/2)-(fan_depth/2)),0,10]){
+					cube([fan_depth+1,fan_side,fan_side+20],center=true);
 			}
 		}
 		for(i=[-1,1]){
@@ -125,7 +113,7 @@ module vent(fan_depth,fan_side,bolt_spacing,total_lenght,rosca,rosca_lenght){
 		}
 		rotate([360/16,0,0]){
 			rotate([0,90,0]){
-				cylinder(r1=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),r2=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),h=total_lenght+2,$fn=8,center=true);
+				cylinder(r1=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),r2=(((fan_side/(1+sqrt(2)))/2)/sin(360/16)),h=total_lenght+20,$fn=8,center=true);
 			}
 		}
 	}
